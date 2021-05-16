@@ -175,7 +175,7 @@ def turn(board, stats):
 
 def checker(board):
     """
-    Check if board filled in correctly (with no repetitions)
+    Checks if board filled in correctly (with no repetitions)
     :param board: dictionary, containing board values
     :return: True or False
     """
