@@ -1,4 +1,4 @@
-import string
+from string import *
 from random import *
 
 
@@ -123,8 +123,7 @@ def table(board, stats):
     print('+---' * 9 + '+', '{: ^9s}'.format(''), '+{:-^7s}+'.format('Числа'))
     for x in range(9):
         print('|{:^3s}:{:^3s}:{:^3s}|{:^3s}:{:^3s}:{:^3s}|{:^3s}:{:^3s}:{:^3s}|'.format(*simple[x * 9:x * 9 + 9]),
-              string.ascii_lowercase[x], '{:^7s}'.format(''),
-              '|{:^7s}|'.format(str(x + 1) + ': ' + str(stats[str(x + 1)])))
+              ascii_lowercase[x], '{:^7s}'.format(''), '|{:^7s}|'.format(str(x + 1) + ': ' + str(stats[str(x + 1)])))
         if x in [2, 5, 8]:
             print('+---' * 9 + '+', '{:^9s}'.format(''), '+{:-^7s}+'.format(''))
         else:
