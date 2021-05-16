@@ -9,23 +9,23 @@ def main():
 
 
 def preparation():
-    nums = '123456789'
-    pattern = ''
-    for x in range(9):
-        pattern += nums[x:] + nums[:x]
+    pattern = '123456789' \
+           '456789123' \
+           '789123456' \
+           '234567891' \
+           '567891234' \
+           '891234567' \
+           '345678912' \
+           '678912345' \
+           '912345678'
     clear = dict(zip([(x, y) for x in 'abcdefghi' for y in range(1, 10)], [x for x in pattern]))
     return shuffler(clear)
 
 
 def shuffler(board):
-    for shuff in range(32):
-        i = randint(0, 2)
-        if i == 0:
-            board = transposition(board)
-        elif i == 1:
-            board = row_shuffle(board)
-        else:
-            board = column_shuffle(board)
+    shuffling = {0: rows_moving, 1: columns_moving, 2: transposition}
+    for shuff in range(256):
+        board = shuffling[randint(0, 2)](board)
     return board
 
 
@@ -36,38 +36,29 @@ def transposition(board):
     return transposed
 
 
-def row_shuffle(board):
-    if i == 0:
-        alphabet = list('abc')
-    elif i == 1:
-        alphabet = list('def')
-    else:
-        alphabet = list('ghi')
-    x = choice(alphabet)
-    del alphabet[alphabet.index(x)]
-    y = choice(alphabet)
-    for z in range(1, 10):
-        temp = board[(x, z)]
-        board[(x, z)] = board[(y, z)]
-        board[(y, z)] = temp
+def rows_moving(board):
+    sectors = {0: 'abc', 1: 'def', 2: 'ghi'}
+    rows = sectors[randint(0, 2)]
+    x = choice(rows)
+    rows = rows[:rows.find(x)] + rows[rows.find(x)+1:]
+    y = choice(rows)
+    for z in '123456789':
+        temp = board[(x, int(z))]
+        board[(x, int(z))] = board[(y, int(z))]
+        board[(y, int(z))] = temp
     return board
 
 
-def column_shuffle(board):
-    i = randint(0, 2)
-    if i == 0:
-        alphabet = list('123')
-    elif i == 1:
-        alphabet = list('456')
-    else:
-        alphabet = list('789')
-    x = int(choice(alphabet))
-    del alphabet[alphabet.index(str(x))]
-    y = int(choice(alphabet))
+def columns_moving(board):
+    sectors = {0: '123', 1: '456', 2: '789'}
+    columns = sectors[randint(0, 2)]
+    x = choice(columns)
+    columns = columns[:columns.find(x)] + columns[columns.find(x) + 1:]
+    y = choice(columns)
     for z in 'abcdefghi':
-        temp = board[(z, x)]
-        board[(z, x)] = board[(z, y)]
-        board[(z, y)] = temp
+        temp = board[(z, int(x))]
+        board[(z, int(x))] = board[(z, int(y))]
+        board[(z, int(y))] = temp
     return board
 
 
@@ -90,11 +81,14 @@ def table(board, stats):
         if tree[key] == '0':
             tree[key] = ' '
     simple = list(tree.values())
-    print('{:-^37s}'.format(''), '{: ^9s}'.format(''), '{:-^9s}'.format('Числа'))
+    print('+---' * 9 + '+', '{: ^9s}'.format(''), '{:-^9s}'.format('Числа'))
     for x in range(9):
-        print('|{:^3s}|{:^3s}|{:^3s}|{:^3s}|{:^3s}|{:^3s}|{:^3s}|{:^3s}|{:^3s}|'.format(*simple[x*9:x*9+9]),
+        print('|{:^3s}:{:^3s}:{:^3s}|{:^3s}:{:^3s}:{:^3s}|{:^3s}:{:^3s}:{:^3s}|'.format(*simple[x*9:x*9+9]),
               string.ascii_lowercase[x], '{:^7s}'.format(''), '|{:^7s}|'.format(str(x+1) + ': ' + str(stats[str(x+1)])))
-        print('{:-^37s}'.format(''), '{:^9s}'.format(''), '{:-^9s}'.format(''))
+        if x in [2, 5, 8]:
+            print('+---' * 9 + '+', '{:^9s}'.format(''), '{:-^9s}'.format(''))
+        else:
+            print('+...' * 9 + '+', '{:^9s}'.format(''), '{:-^9s}'.format(''))
     print(' {:^4d}{:^4d}{:^4d}{:^4d}{:^4d}{:^4d}{:^4d}{:^4d}{:^4d}'.format(*[x for x in range(1, 10)]),
           '{:^9s}'.format(''), '{:^9s}'.format('Ход: ' + str(stats['turn'])), '\n')
 
